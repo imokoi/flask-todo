@@ -7,10 +7,8 @@
 
 from flask import Flask
 from .config import config
-from flask_sqlalchemy import SQLAlchemy
+from .extensions import db, login_manager
 import os
-
-db = SQLAlchemy()
 
 
 def create_app(config_name: str) -> Flask:
@@ -20,6 +18,7 @@ def create_app(config_name: str) -> Flask:
     app.config.from_object(config[config_name])
 
     db.init_app(app)
+    login_manager.init_app(app)
 
     @app.route("/")
     def index():
