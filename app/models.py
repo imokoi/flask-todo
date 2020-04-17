@@ -43,3 +43,6 @@ class Todo(db.Model):
     is_complete = db.Column(db.Integer)
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), index=True)
     list_id = db.Column(db.Integer, db.ForeignKey("todoList.id"), nullable=False)
+
+    def __repr__(self):
+        return "<Todo----- Todo is %s>" % self.title
