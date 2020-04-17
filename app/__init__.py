@@ -5,7 +5,7 @@
  * @Last Modified time: 4/17/2020 1:13 PM
 """
 
-from flask import Flask
+from flask import Flask, render_template, url_for
 from .config import config
 from .extensions import db, login_manager
 from .fakes import fake_user, fake_todo, fake_todo_list
@@ -22,13 +22,13 @@ def create_app(config_name: str = None) -> Flask:
     app.config.from_object(config[config_name])
 
     db.init_app(app)
-    login_manager.init_app(app)
+    # login_manager.init_app(app)
 
     register_commands(app)
 
     @app.route("/")
     def index():
-        return "Hell flask"
+        return render_template("index.html")
 
     return app
 
