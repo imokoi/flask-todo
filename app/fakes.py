@@ -13,7 +13,7 @@ from .extensions import db
 fake = Faker()
 
 
-def fake_user():
+def fake_user() -> None:
     user = User(
         username="tuffytian",
         email="tiantengfei@outlook.com",
@@ -24,7 +24,7 @@ def fake_user():
     db.session.commit()
 
 
-def fake_todo_list():
+def fake_todo_list() -> None:
     todo_list = TodoList(
         title="Default",
         user_id=1
@@ -33,7 +33,7 @@ def fake_todo_list():
     db.session.commit()
 
 
-def fake_todo():
+def fake_todo() -> None:
     for i in range(5):
         todo = Todo(
             title=fake.text(10),

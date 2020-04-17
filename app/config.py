@@ -31,6 +31,7 @@ class Config(object):
 
 
 class DevelopmentConfig(Config):
+    DEBUG = True
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(BASE_DIR, "todo-dev.sqlite")
 
 

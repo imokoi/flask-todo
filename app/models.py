@@ -30,7 +30,7 @@ class TodoList(db.Model):
     title = db.Column(db.String(100))
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    todos = db.relationship("Todo", backref='todoList', lazy=True)
+    todos = db.relationship("Todo", backref='todo_list', lazy=True)
 
     def __repr__(self):
         return "<TodoList----list title is %s>" % self.title
@@ -42,7 +42,7 @@ class Todo(db.Model):
     title = db.Column(db.String(100))
     is_complete = db.Column(db.Integer)
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), index=True)
-    list_id = db.Column(db.Integer, db.ForeignKey("todoList.id"), nullable=False)
+    list_id = db.Column(db.Integer, db.ForeignKey("todo_list.id"), nullable=False)
 
     def __repr__(self):
         return "<Todo----- Todo is %s>" % self.title
