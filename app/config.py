@@ -8,7 +8,6 @@
 import os
 import sys
 
-
 # Get the the path of app. The `PROJECT_DIR` is /Users/xxx/Documents/Codes/PythonProjects/flask-todo/app
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 # os.path.dirname will remove the last segment of a path, so will be
@@ -35,8 +34,6 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = prefix + os.path.join(BASE_DIR, "todo-dev.sqlite")
 
 
-
 config = {
     "development": DevelopmentConfig
 }
-
