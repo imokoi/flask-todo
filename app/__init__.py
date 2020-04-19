@@ -29,8 +29,23 @@ def create_app(config_name: str = None) -> Flask:
 
     register_commands(app)
     register_blueprints(app)
+    register_errors(app)
 
     return app
+
+
+def register_errors(app: Flask):
+    @app.errorhandler(400)
+    def bad_request(e):
+        return render_template('400.html'), 400
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template('404.html'), 404
+
+    @app.errorhandler(500)
+    def internal_server_error(e):
+        return render_template('500.html'), 500
 
 
 def register_blueprints(app: Flask) -> None:

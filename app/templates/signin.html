@@ -30,15 +30,22 @@
 </head>
 <body>
 <div class="text-center">
-    <form class="form-signin mt-5">
-        <h1>Please Sign In</h1>
-        <input class="form-control" type="email" placeholder="Enter your email"/>
-        <input class="form-control mt-2" type="password" placeholder="Enter your password"/>
-        <input class="form-control mt-2" type="password" placeholder="Enter your password again"/>
-        <div class="form-check mb-3 mt-3">
-            <label class="mr-3"><input type="checkbox" value=""> Remember Me</label>
-        </div>
-        <button class="btn btn-primary btn-block">Sing In</button>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <form class="form-signin mt-5" action="/sign" method="post" >
+        {{ form.csrf_token }}
+        <h1>Please Login In</h1>
+        {{ form.username(class='form-control', placeholder="Enter your username") }}
+        {{ form.password(class="form-control mt-2", placeholder="Enter your password") }}
+        {{ form.email(class='form-control', placeholder="Enter your email") }}
+        <input class="btn btn-primary btn-block" type="submit" value="login" />
     </form>
 </div>
 
