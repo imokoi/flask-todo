@@ -15,12 +15,21 @@ todo_bp = Blueprint('todo', __name__)
 
 @todo_bp.route("/", methods=['GET', 'POST'])
 def index():
+    return redirect(url_for("todo.todo", list_id=1))
+
+
+@todo_bp.route("/<int:list_id>", methods=['GET', 'POST'])
+def todo(list_id: int):
     if current_user.is_authenticated is not True:
         return redirect(url_for('login.login'))
     else:
-        current_user_id = current_user.id
-        todo_lists: [TodoList] = TodoList.query.filter_by(user_id=current_user_id)
-        return render_template("index.html", todoLists=todo_lists)
+        if list_id is None:
+            return redirect(url_for("todo.index(1)"))
+        else:
+            current_user_id = current_user.id
+            todo_lists: [TodoList] = TodoList.query.filter_by(user_id=current_user_id)
+            current_list = todo_lists[list_id-1]
+            return render_template("index.html", todoLists=todo_lists, currentList=current_list)
 
 
 @todo_bp.route("/add_list/", methods=['POST'])
@@ -32,7 +41,8 @@ def add_todo_list() -> None:
     )
     db.session.add(new_todo_list)
     db.session.commit()
-    return redirect(url_for("todo.index"))
+    this_list = TodoList.query.filter_by(title=list_title).first()
+    return redirect(url_for("todo.todo", list_id=this_list.id))
 
 
 @todo_bp.route("/add_todo/<int:list_id>", methods=["POST"])
@@ -45,5 +55,5 @@ def add_todo(list_id: int) -> None:
     )
     db.session.add(new_todo)
     db.session.commit()
-    return redirect(url_for("todo.index"))
+    return redirect(url_for("todo.todo", list_id=list_id))
 
