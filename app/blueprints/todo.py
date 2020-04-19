@@ -11,5 +11,5 @@ todo_bp = Blueprint('todo', __name__)
 
 
 @todo_bp.route("/", methods=['GET', 'POST'])
-def login():
+def index():
     return render_template("index.html")

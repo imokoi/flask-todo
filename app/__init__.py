@@ -25,7 +25,7 @@ def create_app(config_name: str = None) -> Flask:
     app.config.from_object(config[config_name])
 
     db.init_app(app)
-    # login_manager.init_app(app)
+    login_manager.init_app(app)
 
     register_commands(app)
     register_blueprints(app)
