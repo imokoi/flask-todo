@@ -33,3 +33,17 @@ def add_todo_list() -> None:
     db.session.add(new_todo_list)
     db.session.commit()
     return redirect(url_for("todo.index"))
+
+
+@todo_bp.route("/add_todo/<int:list_id>", methods=["POST"])
+def add_todo(list_id: int) -> None:
+    title = request.form['title']
+    new_todo = Todo(
+        title=title,
+        list_id=list_id,
+        is_complete=False
+    )
+    db.session.add(new_todo)
+    db.session.commit()
+    return redirect(url_for("todo.index"))
+
