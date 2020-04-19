@@ -12,6 +12,7 @@ from .fakes import fake_user, fake_todo, fake_todo_list
 from .blueprints.login import login_bp
 from .blueprints.signin import signin_bp
 from .blueprints.todo import todo_bp
+from flask_wtf.csrf import CSRFError
 import os
 import click
 
@@ -46,6 +47,10 @@ def register_errors(app: Flask):
     @app.errorhandler(500)
     def internal_server_error(e):
         return render_template('500.html'), 500
+
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        return render_template('errors/400.html', description=e.description), 400
 
 
 def register_blueprints(app: Flask) -> None:

@@ -35,3 +35,10 @@ def login():
             flash("No this account", "warning")
 
     return render_template("login.html", form=form)
+
+
+@login_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('login.html')
