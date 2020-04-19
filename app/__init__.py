@@ -9,6 +9,9 @@ from flask import Flask, render_template, url_for
 from .config import config
 from .extensions import db, login_manager
 from .fakes import fake_user, fake_todo, fake_todo_list
+from .blueprints.login import login_bp
+from .blueprints.signin import signin_bp
+from .blueprints.todo import todo_bp
 import os
 import click
 
@@ -25,12 +28,15 @@ def create_app(config_name: str = None) -> Flask:
     # login_manager.init_app(app)
 
     register_commands(app)
-
-    @app.route("/")
-    def index():
-        return render_template("index.html")
+    register_blueprints(app)
 
     return app
+
+
+def register_blueprints(app: Flask) -> None:
+    app.register_blueprint(login_bp)
+    app.register_blueprint(signin_bp)
+    app.register_blueprint(todo_bp)
 
 
 # Register some commands of database control
