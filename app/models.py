@@ -39,7 +39,7 @@ class TodoList(db.Model):
 
 class Todo(db.Model):
     __tablename__ = "todo"
-    d = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100))
     is_complete = db.Column(db.Integer)
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), index=True)

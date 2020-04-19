@@ -33,10 +33,12 @@
         .nav-item i {
             color: #466cdc;
         }
+
         .nav-item {
             height: 50px;
             margin-top: 5px;
         }
+
         .nav-item:hover {
             background-color: white;
             height: 50px;
@@ -47,6 +49,7 @@
             width: 100%;
             color: #466cdc;
         }
+
         .list-group a {
             text-decoration: none;
         }
@@ -81,8 +84,10 @@
             <ul class="nav flex-column pre-scrollable" style="max-height: 100%">
                 {% for todoList in todoLists %}
                 <li class="row nav-item justify-content-between align-content-center">
-                    <a class="nav-link col-10" href="/{{ todoList.id }}"><i class="fa fa-list fa-fw mr-2" aria-hidden="true"></i>{{ todoList.title }}</a>
-                    <div class="col-2 ml-0" style="line-height: 3rem; color: #414348;"> {{ todoList.todos|length }} </div>
+                    <a class="nav-link col-10" href="/{{ todoList.id }}"><i class="fa fa-list fa-fw mr-2"
+                                                                            aria-hidden="true"></i>{{ todoList.title }}</a>
+                    <div class="col-2 ml-0" style="line-height: 3rem; color: #414348;"> {{ todoList.todos|length }}
+                    </div>
                 </li>
                 {% endfor %}
 
@@ -100,10 +105,20 @@
         <main class="col-md-9 bg-white">
             <div class="container-fluid p-3 pre-scrollable">
                 <ul class="list-group">
-                    {% for todo in  currentList.todos %}
-                    <li class="list-group-item"><a href="#"><i class="fa fa-circle-thin mr-3" aria-hidden="true"></i>{{ todo.title }}</a>
+                    {% for todo in currentList.todos %}
+                    {% if todo.is_complete %}
+                    <li class="list-group-item">
+                        <del><a class="text-dark" href="/update_todo/{{ currentList.id }}/{{ todo.id }}"><i class="fa fa-check-circle mr-3" aria-hidden="true"></i>{{
+                            todo.title }}</a></del>
                     </li>
+
+                    {% else: %}
+                    <li class="list-group-item"><a href="/update_todo/{{ currentList.id }}/{{ todo.id }}"><i class="fa fa-circle-thin mr-3" aria-hidden="true"></i>{{
+                        todo.title }}</a>
+                    </li>
+                    {% endif %}
                     {% endfor %}
+
                 </ul>
                 <li class="row nav-item justify-content-between align-content-center">
                     <!--                    <a class="nav-link col-10" href="#"><i class="fa fa-list fa-fw mr-2" aria-hidden="true"></i>2020年每日工作内容</a>-->

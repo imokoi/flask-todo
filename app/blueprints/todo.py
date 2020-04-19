@@ -6,8 +6,8 @@
 """
 
 from flask import Blueprint, render_template, url_for,redirect, request
-from flask_login import login_required, current_user
-from ..models import Todo, User, TodoList
+from flask_login import current_user
+from ..models import Todo, TodoList
 from ..extensions import db
 
 todo_bp = Blueprint('todo', __name__)
@@ -57,3 +57,10 @@ def add_todo(list_id: int) -> None:
     db.session.commit()
     return redirect(url_for("todo.todo", list_id=list_id))
 
+
+@todo_bp.route("/update_todo/<int:list_id>/<int:todo_id>", methods=["GET"])
+def complete_todo(list_id: int, todo_id: int) -> None:
+    this_todo: Todo = Todo.query.filter_by(id=todo_id).first()
+    this_todo.is_complete = not this_todo.is_complete
+    db.session.commit()
+    return redirect(url_for("todo.todo", list_id=list_id))
