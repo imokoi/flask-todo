@@ -7,7 +7,7 @@ A todo web app written by python Flask
 
 Download the project and run ``flask run``
 
-Use the Jinja2 templeate to render htmls files.
+Use the Jinja2 templeate to render html files.
 
 
 
