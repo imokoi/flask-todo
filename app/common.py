@@ -6,7 +6,7 @@
 """
 
 
-def api_result(status: bool, code: int, message: str, data: dict = None) -> dict:
+def api_result(status: bool, code: int, message: str, data: str = None) -> dict:
     if data:
         return {
             "status": status,
