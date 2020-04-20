@@ -9,8 +9,10 @@ from flask import jsonify, request
 from app.models import User
 from app.extensions import db
 from . import api
+from ...auth import auths
 
-@api.route('/signin', methods=['POST'])
+
+@api.route('/user/signin', methods=['POST'])
 def signin():
     username = request.form.get('username')
     email = request.form.get('email')
@@ -40,4 +42,17 @@ def signin():
             "data": '',
             "message": "failure"
         })
+
+
+@api.route('/user/login', methods=['POST'])
+def login():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    if username is None or password is None:
+        return jsonify({
+            "status": False,
+            "data": '',
+            "message": "Username and Password are necessary."
+        })
+    return auths.authenticate(username, password)
 

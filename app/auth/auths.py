@@ -12,7 +12,7 @@ from ..models import User
 from ..extensions import db
 
 
-def encode_access_token(user_id: int, login_time: datetime) -> str:
+def encode_access_token(user_id: int, login_time: int) -> bytes:
     payload = {
         'exp': datetime.utcnow() + timedelta(days=0, seconds=3600),
         'iat': datetime.utcnow(),
@@ -60,7 +60,7 @@ def authenticate(username, password):
             token = encode_access_token(user_info.id, login_time)
             return jsonify({
                 "status": True,
-                "data": token,
+                "access-token": token.decode(),
                 "message": "success"
             })
         else:
