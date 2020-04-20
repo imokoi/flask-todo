@@ -10,6 +10,7 @@ from app.models import User
 from app.extensions import db
 from . import api
 from ...auth import auths
+from ...common import api_result
 
 
 @api.route('/user/signin', methods=['POST'])
@@ -31,17 +32,9 @@ def signin():
             'email': user.email,
             'login_time': user.login_time
         }
-        return jsonify({
-            "status": True,
-            "data": user_res,
-            "message": "success"
-        })
+        return jsonify(api_result(True, code=200, message='success', data=user_res))
     else:
-        return jsonify({
-            "status": False,
-            "data": '',
-            "message": "failure"
-        })
+        return jsonify(api_result(False, code=401, message='failure.'))
 
 
 @api.route('/user/login', methods=['POST'])
@@ -49,10 +42,21 @@ def login():
     username = request.form.get('username')
     password = request.form.get('password')
     if username is None or password is None:
-        return jsonify({
-            "status": False,
-            "data": '',
-            "message": "Username and Password are necessary."
-        })
+        return jsonify(api_result(False, code=401, message='username and password is necessary.'))
     return auths.authenticate(username, password)
+
+
+@api.route('/user/info', methods=['GET'])
+def get_user_info():
+    result = auths.identify(request)
+    if result['data'] and result['status'] is True:
+        user = User.query.filter_by(id=result['data']).first()
+        user_res = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+        }
+        result = api_result(True, code=200, message="success", data=user_res)
+    return jsonify(result)
+
 

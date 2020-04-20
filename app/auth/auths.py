@@ -32,7 +32,7 @@ def encode_access_token(user_id: int, login_time: int) -> bytes:
 
 
 def decode_access_token(access_token: str) -> str:
-    payload = jwt.encode(access_token, "TuffyTian", options={'verify_exp': True})
+    payload = jwt.decode(access_token, "TuffyTian", algorithms=['HS256'])
     try:
         if 'data' in payload and 'id' in payload['data']:
             return payload
@@ -72,50 +72,42 @@ def authenticate(username, password):
 
 
 def identify(request: Request):
-    auth_header = request.headers.get("access-token")
-    if auth_header:
-        auth_token_arr = auth_header.split(" ")
-        if not auth_header or auth_token_arr[0] != 'JWT' or len(auth_token_arr) != 2:
-            return jsonify({
-                "data": "",
-                "status": False,
-                "message": "Access-Token is not correct"
-            })
-        else:
-            token = auth_token_arr[1]
-            payload = decode_access_token(token)
-            if not (isinstance(payload, str)):
-                user = User.query.filter_by(id=payload['data']['id'])
-                if user is None:
-                    return jsonify({
-                        "data": "",
-                        "status": False,
-                        "message": "This use is not exist."
-                    })
-                else:
-                    if user.login_time == payload['data']['login_time']:
-                        return jsonify({
-                            "data": "",
-                            "status": True,
-                            "message": "success"
-                        })
-                    else:
-                        return jsonify({
-                            "data": "",
-                            "status": False,
-                            "message": "Token has been changed, Please login again."
-                        })
-            else:
-                return jsonify({
+    token = request.headers.get("access-token")
+    if token is not None:
+        payload = decode_access_token(token)
+        if payload:
+            user = User.query.filter_by(id=payload['data']['id']).first()
+            if user is None:
+                result = {
                     "data": "",
                     "status": False,
-                    "message": payload
-                })
+                    "message": "This use is not exist."
+                }
+            else:
+                if user.login_time == payload['data']['login_time']:
+                    result = {
+                        "data": user.id,
+                        "status": True,
+                        "message": "success"
+                    }
+                else:
+                    result = {
+                        "data": "",
+                        "status": False,
+                        "message": "Token has been changed, Please login again."
+                    }
+        else:
+            result = {
+                "data": "",
+                "status": False,
+                "message": payload
+            }
     else:
-        return jsonify({
+        result = {
             "data": "",
             "status": False,
             "message": "Access-Token must be pass"
-        })
+        }
+    return result
 
 
