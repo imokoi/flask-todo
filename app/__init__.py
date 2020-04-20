@@ -5,7 +5,7 @@
  * @Last Modified time: 4/17/2020 1:13 PM
 """
 
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template
 from .config import config
 from .extensions import db, login_manager
 from .fakes import fake_user, fake_todo, fake_todo_list
@@ -13,6 +13,7 @@ from .blueprints.login import login_bp
 from .blueprints.signin import signin_bp
 from .blueprints.todo import todo_bp
 from flask_wtf.csrf import CSRFError
+from .apis.v1 import api
 import os
 import click
 
@@ -57,6 +58,7 @@ def register_blueprints(app: Flask) -> None:
     app.register_blueprint(login_bp)
     app.register_blueprint(signin_bp)
     app.register_blueprint(todo_bp)
+    app.register_blueprint(api, url_prefix="/api/v1")
 
 
 # Register some commands of database control

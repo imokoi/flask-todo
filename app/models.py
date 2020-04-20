@@ -19,6 +19,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(100))
     password_salt = db.Column(db.String(100))
     create_time = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    login_time = db.Column(db.Integer)
     todo_lists = db.relationship("TodoList", backref="user", lazy=True)
 
     def __repr__(self):
