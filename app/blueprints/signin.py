@@ -7,7 +7,7 @@
 
 from flask import Blueprint, render_template, flash, redirect, url_for
 from ..forms import SigninForm
-from ..models import User
+from ..models import User, TodoList
 from ..extensions import db
 
 
@@ -31,6 +31,13 @@ def signin():
                 email=email
             )
             db.session.add(new_user)
+            db.session.commit()
+
+            todo_list = TodoList(
+                title="Default",
+                user_id=new_user.id
+            )
+            db.session.add(todo_list)
             db.session.commit()
             return redirect(url_for('login.login'))
     return render_template('signin.html', form=form)
