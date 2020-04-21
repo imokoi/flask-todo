@@ -62,6 +62,13 @@ class TodoList(db.Model):
         todo_list.title = new_title
         db.session.commit()
 
+    @staticmethod
+    def get_todo_list(list_id: int, current_user_id: int):
+        todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        if todo_list.user_id != current_user_id:
+            raise PermissionError
+        return todo_list
+
     def to_json(self):
         dict = self.__dict__
         if "_sa_instance_state" in dict:
