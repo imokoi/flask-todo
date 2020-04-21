@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 import jwt
 import time
 from flask import jsonify, request
-
+from functools import wraps
 from ..common import success_result, failure_result
 from ..extensions import db
 from ..models import User
@@ -49,6 +49,7 @@ class Auth(object):
 
     @classmethod
     def verify_user_permission(cls, func):
+        @wraps(func)
         def wrapped_func(*args, **kwargs):
             token = request.headers.get("access-token")
             if not token:
