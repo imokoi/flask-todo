@@ -11,7 +11,7 @@ import jwt
 import time
 from flask import jsonify, Request
 
-from ..common import api_result
+from ..common import success_result, failure_result
 from ..extensions import db
 from ..models import User
 
@@ -46,7 +46,7 @@ class Auths(object):
         user_info: User = User.query.filter_by(username=username).first()
         if user_info is None:
             return jsonify(
-                api_result(status=False, code=401, message="The user does not exist.")
+                failure_result(code=401, message="The user does not exist.")
             )
         else:
             if user_info.password == password:
@@ -55,10 +55,10 @@ class Auths(object):
                 db.session.commit()
                 token = Auths.encode_access_token(user_info.id, login_time)
                 return jsonify(
-                    api_result(True, code=200, message="success", data=token.decode())
+                    success_result(data=token.decode())
                 )
             else:
-                return jsonify(api_result(False, code=401, message="Invalid password."))
+                return jsonify(failure_result(code=401, message="Invalid password."))
 
     @classmethod
     def identify(cls, request: Request):
@@ -68,24 +68,14 @@ class Auths(object):
             if payload:
                 user = User.query.filter_by(id=payload["data"]["id"]).first()
                 if user is None:
-                    result = api_result(
-                        False, code=401, message="This use is not exist."
-                    )
+                    result = failure_result(code=401, message="This use is not exist.")
                 else:
                     if user.login_time == payload["data"]["login_time"]:
-                        result = api_result(
-                            True, code=200, message="success", data=user.id
-                        )
+                        result = success_result(data=user.id)
                     else:
-                        result = api_result(
-                            False,
-                            code=401,
-                            message="Token has been changed, Please login again.",
-                        )
+                        result = failure_result(code=401, message="Token has been changed, Please login again.")
             else:
-                result = api_result(
-                    False, code=401, message="Token serialization failure."
-                )
+                result = failure_result(code=401, message="Token serialization failure.")
         else:
-            result = api_result(False, code=401, message="Access-Token must be pass")
+            result = failure_result(code=401, message="Access-Token must be pass")
         return result

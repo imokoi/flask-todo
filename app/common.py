@@ -6,17 +6,35 @@
 """
 
 
-def api_result(status: bool, code: int, message: str, data: str = None) -> dict:
-    if data:
-        return {
-            "status": status,
-            "code": code,
-            "data": data,
-            "message": message
-        }
-    else:
-        return {
-            "status": status,
-            "code": code,
-            "message": message
-        }
+# def api_result(status: bool, code: int, message: str, data: str = None) -> dict:
+#     if data:
+#         return {
+#             "status": status,
+#             "code": code,
+#             "data": data,
+#             "message": message
+#         }
+#     else:
+#         return {
+#             "status": status,
+#             "code": code,
+#             "message": message
+#         }
+
+def success_result(status=True, code=200, message="success", data=None):
+    """ Successful Api Result """
+    return {
+        "status": status,
+        "code": code,
+        "data": data,
+        "message": message
+    }
+
+
+def failure_result(code: int, message: str, status: bool = False):
+    """ Aborted Api Result """
+    return {
+        "status": status,
+        "code": code,
+        "message": message
+    }

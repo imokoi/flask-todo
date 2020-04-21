@@ -10,7 +10,7 @@ from app.models import User
 from app.extensions import db
 from . import api
 from ...auth.auths import Auths
-from ...common import api_result
+from ...common import success_result, failure_result
 
 
 @api.route("/user/signin", methods=["POST"])
@@ -28,9 +28,9 @@ def signin():
             "email": user.email,
             "login_time": user.login_time,
         }
-        return jsonify(api_result(True, code=200, message="success", data=user_res))
+        return jsonify(success_result(data=user_res))
     else:
-        return jsonify(api_result(False, code=401, message="failure."))
+        return jsonify(failure_result(code=401, message="failure."))
 
 
 @api.route("/user/login", methods=["POST"])
@@ -39,7 +39,7 @@ def login():
     password = request.form.get("password")
     if username is None or password is None:
         return jsonify(
-            api_result(False, code=401, message="username and password is necessary.")
+            failure_result(code=401, message="username and password is necessary.")
         )
     return Auths.authenticate(username, password)
 
@@ -54,5 +54,5 @@ def get_user_info():
             "username": user.username,
             "email": user.email,
         }
-        result = api_result(True, code=200, message="success", data=user_res)
+        result = success_result(data=user_res)
     return jsonify(result)
