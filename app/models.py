@@ -47,14 +47,18 @@ class TodoList(db.Model):
         db.session.commit()
 
     @staticmethod
-    def delete_todo_list(list_id: int):
-        todo_list = TodoList.query.filter_by(id=list_id).first()
+    def delete_todo_list(list_id: int, current_user_id: int):
+        todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        if todo_list.user_id != current_user_id:
+            raise PermissionError
         db.session.delete(todo_list)
         db.session.commit()
 
     @staticmethod
-    def update_todo_list(list_id: int, new_title: str):
+    def update_todo_list(list_id: int, new_title: str, current_user_id: int):
         todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        if todo_list.user_id != current_user_id:
+            raise PermissionError
         todo_list.title = new_title
         db.session.commit()
 
@@ -75,3 +79,9 @@ class Todo(db.Model):
 
     def __repr__(self):
         return "<Todo----- Todo is %s>" % self.title
+
+    def to_json(self):
+        dict = self.__dict__
+        if "_sa_instance_state" in dict:
+            del dict["_sa_instance_state"]
+        return dict

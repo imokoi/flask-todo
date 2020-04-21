@@ -65,7 +65,7 @@ class Auth(object):
                             return jsonify(
                                 failure_result(code=401, message="Token has been changed, Please login again."))
                         else:
-                            return func(*args, **kwargs)
+                            return func(current_user_id=user.id, *args, **kwargs)
                 except jwt.ExpiredSignatureError:
                     return jsonify(failure_result(code=401, message="Token Expired!"))
                 except jwt.InvalidTokenError:
