@@ -37,6 +37,27 @@ class TodoList(db.Model):
     def __repr__(self):
         return "<TodoList----list title is %s>" % self.title
 
+    @staticmethod
+    def add_todo_list(user_id: int, title: str):
+        todo_list = TodoList(
+            title=title,
+            user_id=user_id
+        )
+        db.session.add(todo_list)
+        db.session.commit()
+
+    @staticmethod
+    def delete_todo_list(list_id: int):
+        todo_list = TodoList.query.filter_by(id=list_id).first()
+        db.session.delete(todo_list)
+        db.session.commit()
+
+    @staticmethod
+    def update_todo_list(list_id: int, new_title: str):
+        todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        todo_list.title = new_title
+        db.session.commit()
+
     def to_json(self):
         dict = self.__dict__
         if "_sa_instance_state" in dict:
