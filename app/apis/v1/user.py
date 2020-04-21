@@ -9,7 +9,7 @@ from flask import jsonify, request
 from app.models import User
 from app.extensions import db
 from . import api
-from ...auth.auths import Auths
+from ...auth.auth import Auth
 from ...common import success_result, failure_result
 
 
@@ -41,18 +41,17 @@ def login():
         return jsonify(
             failure_result(code=401, message="username and password is necessary.")
         )
-    return Auths.authenticate(username, password)
+    return Auth.authenticate(username, password)
 
 
-@api.route("/user/info", methods=["GET"])
-def get_user_info():
-    result = Auths.identify(request)
-    if result["data"] and result["status"] is True:
-        user = User.query.filter_by(id=result["data"]).first()
-        user_res = {
-            "id": user.id,
-            "username": user.username,
-            "email": user.email,
-        }
-        result = success_result(data=user_res)
+@api.route("/user/<int:user_id>/info", methods=["GET"])
+@Auth.verify_user_permission
+def get_user_info(user_id: int):
+    user = User.query.filter_by(id=user_id).first()
+    user_res = {
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+    }
+    result = success_result(data=user_res)
     return jsonify(result)
