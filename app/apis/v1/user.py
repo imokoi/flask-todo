@@ -6,7 +6,7 @@
 """
 
 from flask import jsonify, request
-from app.models import User
+from app.models import User, TodoList
 from app.extensions import db
 from . import api
 from ...auth.auth import Auth
@@ -20,6 +20,12 @@ def signin():
     password = request.form.get("password")
     user = User(username=username, email=email, password=password)
     db.session.add(user)
+    db.session.commit()
+    todo_list = TodoList(
+        title="Default",
+        user_id=user.id
+    )
+    db.session.add(todo_list)
     db.session.commit()
     if user.id:
         user_res = {
@@ -44,10 +50,10 @@ def login():
     return Auth.authenticate(username, password)
 
 
-@api.route("/user/<int:user_id>/info", methods=["GET"])
+@api.route("/user/info", methods=["GET"])
 @Auth.verify_user_permission
-def get_user_info(user_id: int):
-    user = User.query.filter_by(id=user_id).first()
+def get_user_info(current_user_id: int):
+    user = User.query.filter_by(id=current_user_id).first()
     user_res = {
         "id": user.id,
         "username": user.username,

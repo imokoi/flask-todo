@@ -84,6 +84,34 @@ class Todo(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), index=True)
     list_id = db.Column(db.Integer, db.ForeignKey("todo_list.id"), nullable=False)
 
+    @staticmethod
+    def add_todo(title: str, list_id):
+        new_todo = Todo(
+            title=title,
+            list_id=list_id,
+            is_complete=False
+        )
+        db.session.add(new_todo)
+        db.session.commit()
+
+    @staticmethod
+    def delete_todo(todo_id: int, user_id: int):
+        todo = Todo.query.filter_by(id=todo_id).first()
+        db.session.delete(todo)
+        db.session.commit()
+
+    @staticmethod
+    def update_todo(todo_id: int, new_title: str):
+        todo = Todo.query.filter_by(id=todo_id).first()
+        todo.title = new_title
+        db.session.commit()
+
+    @staticmethod
+    def toggle_todo(todo_id: int):
+        this_todo: Todo = Todo.query.filter_by(id=todo_id).first()
+        this_todo.is_complete = not this_todo.is_complete
+        db.session.commit()
+
     def __repr__(self):
         return "<Todo----- Todo is %s>" % self.title
 

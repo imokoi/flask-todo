@@ -37,7 +37,8 @@ def fake_todo() -> None:
     for i in range(5):
         todo = Todo(
             title=fake.text(10),
-            list_id=1
+            list_id=1,
+            is_complete=False
         )
         db.session.add(todo)
     db.session.commit()
