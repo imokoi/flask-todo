@@ -7,13 +7,21 @@ A todo web app written by python Flask
 2. execute ``pip install -r requirements.txt`` on Windows or ``pip3 install -r requirements.txt`` on Mac
 3. run ``flask run``
 
+
+
+**There are 2 versions in this project.**
+
+* The first one which is a web app written with Jinja2 template.
+
+* The second one which is ``JSON api``,  you can check it in ``apis`` folder.
+
+  
+
 Login Account:
 ``username``: ``tuffytian``
 ``password``: ``test``
 
 or you can register one!
-
-Using Jinja2 template to render html files in this Project.
 
 
 
