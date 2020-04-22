@@ -8,6 +8,7 @@
 from datetime import datetime
 from .extensions import db
 from flask_login import UserMixin
+from flask import g
 
 
 class User(db.Model, UserMixin):
@@ -85,7 +86,10 @@ class Todo(db.Model):
     list_id = db.Column(db.Integer, db.ForeignKey("todo_list.id"), nullable=False)
 
     @staticmethod
-    def add_todo(title: str, list_id):
+    def add_todo(title: str, list_id: int):
+        todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        if todo_list.id != g.current_user.id:
+            raise PermissionError
         new_todo = Todo(
             title=title,
             list_id=list_id,
@@ -95,19 +99,28 @@ class Todo(db.Model):
         db.session.commit()
 
     @staticmethod
-    def delete_todo(todo_id: int, user_id: int):
+    def delete_todo(todo_id: int, list_id: int):
+        todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        if todo_list.id != g.current_user.id:
+            raise PermissionError
         todo = Todo.query.filter_by(id=todo_id).first()
         db.session.delete(todo)
         db.session.commit()
 
     @staticmethod
-    def update_todo(todo_id: int, new_title: str):
+    def update_todo(todo_id: int, new_title: str, list_id: int):
+        todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        if todo_list.id != g.current_user.id:
+            raise PermissionError
         todo = Todo.query.filter_by(id=todo_id).first()
         todo.title = new_title
         db.session.commit()
 
     @staticmethod
-    def toggle_todo(todo_id: int):
+    def toggle_todo(todo_id: int, list_id: int):
+        todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
+        if todo_list.id != g.current_user.id:
+            raise PermissionError
         this_todo: Todo = Todo.query.filter_by(id=todo_id).first()
         this_todo.is_complete = not this_todo.is_complete
         db.session.commit()

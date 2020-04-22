@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 import jwt
 import time
-from flask import jsonify, request
+from flask import jsonify, request, g
 from functools import wraps
 from ..common import success_result, failure_result
 from ..extensions import db
@@ -65,7 +65,8 @@ class Auth(object):
                             return jsonify(
                                 failure_result(code=401, message="Token has been changed, Please login again."))
                         else:
-                            return func(current_user_id=user.id, *args, **kwargs)
+                            g.current_user = user
+                            return func(*args, **kwargs)
                 except jwt.ExpiredSignatureError:
                     return jsonify(failure_result(code=401, message="Token Expired!"))
                 except jwt.InvalidTokenError:

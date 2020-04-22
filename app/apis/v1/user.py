@@ -5,7 +5,7 @@
  * @Last Modified time: 2020/4/20 12:09 PM
 """
 
-from flask import jsonify, request
+from flask import jsonify, request, g
 from app.models import User, TodoList
 from app.extensions import db
 from . import api
@@ -52,8 +52,8 @@ def login():
 
 @api.route("/user/info", methods=["GET"])
 @Auth.verify_user_permission
-def get_user_info(current_user_id: int):
-    user = User.query.filter_by(id=current_user_id).first()
+def get_user_info():
+    user = User.query.filter_by(id=g.current_user.id).first()
     user_res = {
         "id": user.id,
         "username": user.username,
