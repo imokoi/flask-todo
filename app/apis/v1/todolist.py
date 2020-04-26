@@ -18,7 +18,7 @@ from ...error import PermissionError
 def get_todo_lists():
     """ Get the all list of todoList """
     todo_list = TodoList.query.filter_by(user_id=g.current_user.id)
-    return jsonify(success_result([list.to_json() for list in todo_list]))
+    return jsonify(success_result(data=[list.to_json() for list in todo_list]))
 
 
 @api.route("/user/todo_list", methods=["POST"])
