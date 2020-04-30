@@ -15,10 +15,10 @@ from ...common import success_result, failure_result
 
 @api.route("/user/signin", methods=["POST"])
 def signin():
-    username = request.form.get("username")
-    email = request.form.get("email")
-    password = request.form.get("password")
-    user = User(username=username, email=email, password=password)
+    username = request.json.get('username')
+    password = request.json.get('password')
+    print(request)
+    user = User(username=username, email="", password=password)
     db.session.add(user)
     db.session.commit()
     todo_list = TodoList(
