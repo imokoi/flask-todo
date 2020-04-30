@@ -41,8 +41,8 @@ def signin():
 
 @api.route("/user/login", methods=["POST"])
 def login():
-    username = request.form.get("username")
-    password = request.form.get("password")
+    username = request.json.get("username")
+    password = request.json.get("password")
     if username is None or password is None:
         return jsonify(
             failure_result(code=401, message="username and password is necessary.")
