@@ -19,8 +19,6 @@ import time
 def get_todo_lists():
     """ Get the all list of todoList """
     todo_list: TodoList = TodoList.query.filter_by(user_id=g.current_user.id)
-    todo_list.create_time = time.strftime("%Y-%m-%d %H:%M:%S",
-                                          time.gmtime(todo_list.create_time))
     return jsonify(success_result(data=[list.to_json() for list in todo_list]))
 
 
