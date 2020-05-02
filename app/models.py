@@ -9,6 +9,7 @@ from datetime import datetime
 from .extensions import db
 from flask_login import UserMixin
 from flask import g
+from datetime import datetime
 
 
 class User(db.Model, UserMixin):
@@ -24,7 +25,8 @@ class User(db.Model, UserMixin):
     todo_lists = db.relationship("TodoList", backref="user", lazy=True)
 
     def __repr__(self):
-        return "<User-----user_id is %d username is %d>" % (self.id, self.username)
+        return "<User-----user_id is %d username is %d>" % (self.id,
+                                                            self.username)
 
 
 class TodoList(db.Model):
@@ -40,10 +42,7 @@ class TodoList(db.Model):
 
     @staticmethod
     def add_todo_list(user_id: int, title: str):
-        todo_list = TodoList(
-            title=title,
-            user_id=user_id
-        )
+        todo_list = TodoList(title=title, user_id=user_id)
         db.session.add(todo_list)
         db.session.commit()
 
@@ -70,10 +69,13 @@ class TodoList(db.Model):
             raise PermissionError
         return todo_list
 
-    def to_json(self):
-        dict = self.__dict__
-        if "_sa_instance_state" in dict:
-            del dict["_sa_instance_state"]
+    def to_json(self) -> dict:
+        dict = {
+            'id': self.id,
+            'title': self.title,
+            'create_time': self.create_time.strftime('%Y-%m-%d %H:%M:%S.%f'),
+            'user_id': self.user_id
+        }
         return dict
 
 
@@ -83,18 +85,16 @@ class Todo(db.Model):
     title = db.Column(db.String(100))
     is_complete = db.Column(db.Integer)
     create_time = db.Column(db.DateTime, default=datetime.utcnow(), index=True)
-    list_id = db.Column(db.Integer, db.ForeignKey("todo_list.id"), nullable=False)
+    list_id = db.Column(db.Integer,
+                        db.ForeignKey("todo_list.id"),
+                        nullable=False)
 
     @staticmethod
     def add_todo(title: str, list_id: int):
         todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
         if todo_list.id != g.current_user.id:
             raise PermissionError
-        new_todo = Todo(
-            title=title,
-            list_id=list_id,
-            is_complete=False
-        )
+        new_todo = Todo(title=title, list_id=list_id, is_complete=False)
         db.session.add(new_todo)
         db.session.commit()
 
