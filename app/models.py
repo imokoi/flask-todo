@@ -101,7 +101,7 @@ class Todo(db.Model):
     @staticmethod
     def delete_todo(todo_id: int, list_id: int):
         todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
-        if todo_list.id != g.current_user.id:
+        if todo_list.user_id != g.current_user.id:
             raise PermissionError
         todo = Todo.query.filter_by(id=todo_id).first()
         db.session.delete(todo)
@@ -110,7 +110,7 @@ class Todo(db.Model):
     @staticmethod
     def update_todo(todo_id: int, new_title: str, list_id: int):
         todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
-        if todo_list.id != g.current_user.id:
+        if todo_list.user_id != g.current_user.id:
             raise PermissionError
         todo = Todo.query.filter_by(id=todo_id).first()
         todo.title = new_title
@@ -119,7 +119,7 @@ class Todo(db.Model):
     @staticmethod
     def toggle_todo(todo_id: int, list_id: int):
         todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
-        if todo_list.id != g.current_user.id:
+        if todo_list.user_id != g.current_user.id:
             raise PermissionError
         this_todo: Todo = Todo.query.filter_by(id=todo_id).first()
         this_todo.is_complete = not this_todo.is_complete
