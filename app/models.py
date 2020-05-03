@@ -92,7 +92,7 @@ class Todo(db.Model):
     @staticmethod
     def add_todo(title: str, list_id: int):
         todo_list: TodoList = TodoList.query.filter_by(id=list_id).first()
-        if todo_list.id != g.current_user.id:
+        if todo_list.user_id != g.current_user.id:
             raise PermissionError
         new_todo = Todo(title=title, list_id=list_id, is_complete=False)
         db.session.add(new_todo)
@@ -128,8 +128,12 @@ class Todo(db.Model):
     def __repr__(self):
         return "<Todo----- Todo is %s>" % self.title
 
-    def to_json(self):
-        dict = self.__dict__
-        if "_sa_instance_state" in dict:
-            del dict["_sa_instance_state"]
+    def to_json(self) -> dict:
+        dict = {
+            'id': self.id,
+            'title': self.title,
+            'create_time': self.create_time.strftime('%Y-%m-%d %H:%M:%S.%f'),
+            'is_complete': self.is_complete,
+            'list_id': self.list_id
+        }
         return dict

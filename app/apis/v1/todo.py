@@ -18,10 +18,12 @@ def get_todos():
     """ Get the all todos of one todolist """
     list_id = request.args.get("listId")
     try:
-        todo_list = TodoList.get_todo_list(list_id, current_user_id=g.current_user.id)
+        todo_list = TodoList.get_todo_list(list_id,
+                                           current_user_id=g.current_user.id)
     except PermissionError:
         return jsonify(failure_result(code=401, message="bad request."))
-    return jsonify(success_result([todo.to_json() for todo in todo_list.todos]))
+    return jsonify(
+        success_result(data=[todo.to_json() for todo in todo_list.todos]))
 
 
 @api.route("/user/todo", methods=["post"])
