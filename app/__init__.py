@@ -14,6 +14,7 @@ from .blueprints.signin import signin_bp
 from .blueprints.todo import todo_bp
 from flask_wtf.csrf import CSRFError
 from .apis.v1 import api
+from flask_cors import CORS
 import os
 import click
 
@@ -25,7 +26,7 @@ def create_app(config_name: str = None) -> Flask:
         config_name = os.getenv('FLASK_CONFIG') or 'development'
     app = Flask(__name__)
     app.config.from_object(config[config_name])
-
+    CORS(app, supports_credentials=True)
     db.init_app(app)
     login_manager.init_app(app)
 
@@ -51,7 +52,8 @@ def register_errors(app: Flask):
 
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
-        return render_template('errors/400.html', description=e.description), 400
+        return render_template('errors/400.html',
+                               description=e.description), 400
 
 
 def register_blueprints(app: Flask) -> None:
